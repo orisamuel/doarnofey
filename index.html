@@ -164,7 +164,7 @@ textarea { resize:vertical; min-height:75px; }
         <span class="svc-check">✓</span>
         <span class="svc-icon">🛵</span>
         <span class="svc-name">משלוח לבית</span>
-        <span class="svc-price">15 ₪</span>
+        <span class="svc-price">10 ₪</span>
         <span class="svc-desc">מביאים ישירות<br>עד הדלת</span>
       </div>
     </div>
@@ -252,7 +252,7 @@ function setSvc(type) {
   document.getElementById('pickupCard').classList.toggle('selected', type === 'pickup');
   document.getElementById('delivCard').classList.toggle('selected', type === 'delivery');
   document.getElementById('addrSec').classList.toggle('open', type === 'delivery');
-  document.getElementById('s2Btn').textContent = type === 'delivery' ? 'המשך לתשלום (15 ₪) ←' : 'המשך לתשלום (5 ₪) ←';
+  document.getElementById('s2Btn').textContent = type === 'delivery' ? 'המשך לתשלום (10 ₪) ←' : 'המשך לתשלום (5 ₪) ←';
 }
 
 function setStep(n) {
@@ -281,7 +281,7 @@ function toStep3() {
     document.getElementById('err2').classList.add('show'); return;
   }
   document.getElementById('err2').classList.remove('show');
-  document.getElementById('payAmt').textContent = selSvc === 'delivery' ? '15 ₪' : '5 ₪';
+  document.getElementById('payAmt').textContent = selSvc === 'delivery' ? '10 ₪' : '5 ₪';
   document.getElementById('payLbl').textContent = selSvc === 'delivery' ? 'עבור משלוח עד הבית' : 'עבור איסוף ממשפחת סמואל';
   const fn = document.getElementById('firstName').value.trim();
   const ln = document.getElementById('lastName').value.trim();
@@ -352,7 +352,7 @@ function checkStatus() {
         return;
       }
       const cls  = {'ממתין':'b-waiting','ראיתי את פרטי החבילה':'b-seen','אספתי את החבילה':'b-collected','אצלך בבית':'b-delivered'};
-      const icons = {'בהמתנה':'⏳','ראיתי את פרטי החבילה':'👀','אספתי את החבילה':'✅','אצלך בבית':'🏠'};
+      const icons = {'ממתין':'⏳','ראיתי את פרטי החבילה':'👀','אספתי את החבילה':'✅','אצלך בבית':'🏠'};
       div.innerHTML = res.orders.map(function(o) {
         const cl = cls[o.status] || 'b-waiting';
         const ic = icons[o.status] || '📦';
