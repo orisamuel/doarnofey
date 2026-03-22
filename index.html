@@ -352,7 +352,7 @@ function checkStatus() {
         return;
       }
       const cls  = {'ממתין':'b-waiting','ראיתי את פרטי החבילה':'b-seen','אספתי את החבילה':'b-collected','אצלך בבית':'b-delivered'};
-      const icons = {'ממתין':'⏳','ראיתי את פרטי החבילה':'👀','אספתי את החבילה':'✅','אצלך בבית':'🏠'};
+      const icons = {'בהמתנה':'⏳','ראיתי את פרטי החבילה':'👀','אספתי את החבילה':'✅','אצלך בבית':'🏠'};
       div.innerHTML = res.orders.map(function(o) {
         const cl = cls[o.status] || 'b-waiting';
         const ic = icons[o.status] || '📦';
