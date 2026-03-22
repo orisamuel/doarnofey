@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>שירות חבילות – נופי פרת</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --cream: #FEF8EE; --teal: #1B5E6B; --teal-lt: #267080; --teal-pale: #EAF5F7;
+  --amber-pale: #FFF4E0; --sand: #F0E8D5;
+  --green: #2E7D52; --red: #C0392B; --text: #1A2828; --text-lt: #5A7272;
+  --border: #E2D8C8; --white: #FFFFFF;
+  --shadow: 0 4px 24px rgba(27,94,107,0.10);
+}
+body { font-family:'Heebo',sans-serif; background:var(--cream); color:var(--text); min-height:100vh; }
+
+.header { background:linear-gradient(135deg,#0F3D47 0%,#1B5E6B 50%,#267080 100%); color:#fff; text-align:center; padding:36px 20px 30px; position:relative; overflow:hidden; }
+.header::after { content:''; position:absolute; bottom:-1px; left:0; right:0; height:20px; background:var(--cream); clip-path:ellipse(55% 100% at 50% 100%); }
+.header-icon { font-size:52px; display:block; margin-bottom:10px; animation:floatIn 0.6s cubic-bezier(.34,1.56,.64,1) both; }
+@keyframes floatIn { from{transform:translateY(-20px) scale(0.8);opacity:0} to{transform:translateY(0) scale(1);opacity:1} }
+.header h1 { font-size:24px; font-weight:900; letter-spacing:-0.5px; margin-bottom:6px; }
+.header .sub { font-size:14px; opacity:0.75; }
+.container { max-width:500px; margin:0 auto; padding:28px 16px 72px; }
+.steps { display:flex; align-items:center; justify-content:center; margin-bottom:24px; }
+.step-item { display:flex; flex-direction:column; align-items:center; gap:5px; }
+.step-dot { width:38px; height:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:800; transition:all 0.35s cubic-bezier(.34,1.56,.64,1); background:var(--sand); color:var(--text-lt); border:2px solid var(--border); }
+.step-item.active .step-dot { background:var(--teal); color:#fff; border-color:var(--teal); box-shadow:0 0 0 5px rgba(27,94,107,0.15); transform:scale(1.1); }
+.step-item.done .step-dot { background:var(--green); color:#fff; border-color:var(--green); }
+.step-lbl { font-size:11px; font-weight:600; color:var(--text-lt); }
+.step-item.active .step-lbl { color:var(--teal); font-weight:800; }
+.step-item.done .step-lbl { color:var(--green); }
+.step-line { height:2px; width:54px; background:var(--border); margin-bottom:20px; transition:background 0.35s; border-radius:2px; }
+.step-line.done { background:var(--green); }
+.card { background:var(--white); border-radius:18px; padding:26px 22px; box-shadow:var(--shadow); border:1px solid rgba(27,94,107,0.07); animation:cardIn 0.3s ease both; }
+@keyframes cardIn { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+.card-title { font-size:17px; font-weight:800; color:var(--teal); margin-bottom:20px; display:flex; align-items:center; gap:8px; }
+.form-group { margin-bottom:14px; }
+label { display:block; font-size:12.5px; font-weight:700; color:var(--text); margin-bottom:5px; }
+input[type="text"], textarea { width:100%; padding:11px 13px; border:1.5px solid var(--border); border-radius:10px; font-family:'Heebo',sans-serif; font-size:15px; color:var(--text); background:var(--white); transition:border-color 0.2s,box-shadow 0.2s; direction:rtl; }
+input:focus, textarea:focus { outline:none; border-color:var(--teal); box-shadow:0 0 0 3px rgba(27,94,107,0.12); }
+input::placeholder, textarea::placeholder { color:#C0CCCC; }
+textarea { resize:vertical; min-height:75px; }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.toggle-paste { display:inline-flex; align-items:center; gap:6px; font-size:13px; color:var(--teal); cursor:pointer; padding:6px 12px 6px 10px; background:var(--teal-pale); border-radius:20px; margin-bottom:16px; font-weight:600; transition:background 0.2s; border:none; }
+.toggle-paste:hover { background:#D8EFF2; }
+.paste-section { display:none; margin-bottom:16px; }
+.paste-section.open { display:block; }
+.paste-note { font-size:11.5px; color:var(--text-lt); margin-top:4px; line-height:1.5; }
+.service-options { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
+.svc-card { border:2px solid var(--border); border-radius:14px; padding:18px 12px 14px; cursor:pointer; text-align:center; transition:all 0.25s; background:var(--white); position:relative; user-select:none; }
+.svc-card:hover { border-color:var(--teal-lt); transform:translateY(-2px); }
+.svc-card.selected { border-color:var(--teal); background:var(--teal-pale); box-shadow:0 0 0 4px rgba(27,94,107,0.1); }
+.svc-icon { font-size:34px; display:block; margin-bottom:8px; }
+.svc-name { font-size:15px; font-weight:800; color:var(--text); display:block; }
+.svc-price { font-size:22px; font-weight:900; color:var(--teal); display:block; margin:4px 0; }
+.svc-desc { font-size:12px; color:var(--text-lt); line-height:1.4; display:block; }
+.svc-check { display:none; position:absolute; top:8px; left:8px; width:22px; height:22px; background:var(--teal); border-radius:50%; align-items:center; justify-content:center; color:#fff; font-size:11px; font-weight:900; }
+.svc-card.selected .svc-check { display:flex; }
+.address-section { display:none; }
+.address-section.open { display:block; }
+.btn { width:100%; padding:13px 20px; border-radius:12px; font-family:'Heebo',sans-serif; font-size:16px; font-weight:800; cursor:pointer; border:none; transition:all 0.2s; display:flex; align-items:center; justify-content:center; gap:8px; }
+.btn-primary { background:var(--teal); color:#fff; }
+.btn-primary:hover:not(:disabled) { background:var(--teal-lt); transform:translateY(-2px); box-shadow:0 8px 22px rgba(27,94,107,0.28); }
+.btn-primary:disabled { opacity:0.6; cursor:default; }
+.btn-ghost { background:transparent; color:var(--text-lt); border:1.5px solid var(--border); margin-top:10px; font-size:14px; }
+.btn-ghost:hover { background:var(--sand); color:var(--text); }
+.pay-summary { background:var(--amber-pale); border:1.5px solid #F0C060; border-radius:14px; padding:18px; text-align:center; margin-bottom:20px; }
+.pay-amount { font-size:42px; font-weight:900; color:var(--teal); line-height:1; margin-bottom:4px; }
+.pay-label { font-size:13px; color:var(--text-lt); }
+.pay-detail { font-size:12px; color:var(--text-lt); margin-top:10px; padding-top:10px; border-top:1px solid #F0C060; }
+.pay-intro { font-size:14px; color:var(--text-lt); text-align:center; margin-bottom:14px; font-weight:500; }
+.pay-btns { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
+.btn-paybox { background:#F04E23; color:#fff; padding:15px 10px; border-radius:12px; border:none; cursor:pointer; font-family:'Heebo',sans-serif; font-size:16px; font-weight:900; display:flex; align-items:center; justify-content:center; gap:6px; text-decoration:none; transition:all 0.2s; position:relative; }
+.btn-paybox:hover { transform:translateY(-2px); box-shadow:0 8px 20px rgba(240,78,35,0.32); }
+.btn-bit { background:#00B45A; color:#fff; padding:15px 10px; border-radius:12px; border:none; cursor:pointer; font-family:'Heebo',sans-serif; font-size:16px; font-weight:900; display:flex; align-items:center; justify-content:center; gap:6px; transition:all 0.2s; }
+.btn-bit:hover { transform:translateY(-2px); box-shadow:0 8px 20px rgba(0,180,90,0.30); }
+.contact-bar { background:var(--sand); border-radius:10px; padding:10px 14px; font-size:13px; color:var(--text-lt); text-align:center; margin-bottom:16px; }
+.contact-bar strong { color:var(--teal); }
+.paid-box { border:2px dashed var(--border); border-radius:14px; padding:18px; text-align:center; }
+.paid-box p { font-size:14px; color:var(--text-lt); margin-bottom:12px; }
+.success-card { text-align:center; padding:36px 22px; }
+.success-icon { font-size:68px; display:block; margin-bottom:16px; animation:popIn 0.5s cubic-bezier(.34,1.56,.64,1) both; }
+@keyframes popIn { from{transform:scale(0);opacity:0} to{transform:scale(1);opacity:1} }
+.success-title { font-size:24px; font-weight:900; color:var(--green); margin-bottom:10px; }
+.success-sub { font-size:15px; color:var(--text-lt); line-height:1.7; }
+.divider { display:flex; align-items:center; gap:12px; margin:28px 0; color:var(--text-lt); font-size:13px; font-weight:600; }
+.divider::before, .divider::after { content:''; flex:1; height:1px; background:var(--border); }
+.status-result { margin-top:16px; }
+.status-card { border:1.5px solid var(--border); border-radius:12px; padding:14px; margin-bottom:10px; animation:cardIn 0.25s ease; }
+.status-row { display:flex; justify-content:space-between; align-items:flex-start; }
+.status-name { font-size:15px; font-weight:800; }
+.status-meta { font-size:12px; color:var(--text-lt); margin-top:3px; line-height:1.6; }
+.badge { display:inline-flex; align-items:center; gap:5px; padding:5px 10px; border-radius:20px; font-size:12px; font-weight:700; white-space:nowrap; }
+.b-waiting { background:#FFF3E0; color:#BF6000; }
+.b-seen { background:#E3F2FD; color:#1357A6; }
+.b-collected { background:#E8F5E9; color:#1B5E20; }
+.b-delivered { background:#EDE7F6; color:#4527A0; }
+.paid-tag { font-size:11px; font-weight:700; margin-top:5px; text-align:center; }
+.paid-yes { color:var(--green); }
+.paid-no { color:var(--red); }
+.err-msg { background:#FFE8E8; color:var(--red); border-radius:8px; padding:10px 13px; font-size:13px; margin-top:10px; display:none; font-weight:600; }
+.err-msg.show { display:block; }
+.spinner { width:18px; height:18px; border:2px solid rgba(255,255,255,0.3); border-top-color:#fff; border-radius:50%; animation:spin 0.75s linear infinite; }
+@keyframes spin { to{transform:rotate(360deg)} }
+.footer { text-align:center; padding:16px; font-size:12px; color:var(--text-lt); opacity:0.7; }
+@media (max-width:360px) { .form-row, .service-options, .pay-btns { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="header-icon">📦</span>
+  <h1>שירות חבילות נופי פרת</h1>
+  <p class="sub">איסוף ומשלוח חבילות לתושבי הישוב</p>
+</div>
+
+<div class="container">
+  <div class="steps" id="stepIndicator">
+    <div class="step-item active" id="si1"><div class="step-dot">1</div><span class="step-lbl">פרטים</span></div>
+    <div class="step-line" id="sl1"></div>
+    <div class="step-item" id="si2"><div class="step-dot">2</div><span class="step-lbl">שירות</span></div>
+    <div class="step-line" id="sl2"></div>
+    <div class="step-item" id="si3"><div class="step-dot">3</div><span class="step-lbl">תשלום</span></div>
+  </div>
+
+  <!-- STEP 1 -->
+  <div id="step1" class="card">
+    <div class="card-title">📋 פרטי החבילה</div>
+    <button class="toggle-paste" onclick="togglePaste()">📱 קיבלת הודעה על החבילה? הדבק אותה כאן</button>
+    <div class="paste-section" id="pasteSec">
+      <div class="form-group">
+        <label>הודעת SMS / WhatsApp שקיבלת</label>
+        <textarea id="origMsg" placeholder="הדבק כאן את ההודעה..."></textarea>
+        <p class="paste-note">💡 ההודעה תישמר לעיון האדמין, אך את הפרטים יש למלא בשדות למטה</p>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>שם פרטי *</label><input type="text" id="firstName" placeholder="ישראל"></div>
+      <div class="form-group"><label>שם משפחה *</label><input type="text" id="lastName" placeholder="ישראלי"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>תעודת זהות *</label><input type="text" id="idNum" placeholder="123456789" inputmode="numeric"></div>
+      <div class="form-group"><label>מספר חבילה *</label><input type="text" id="pkgNum" placeholder="A12345"></div>
+    </div>
+    <div class="err-msg" id="err1">⚠️ יש למלא את כל השדות</div>
+    <button class="btn btn-primary" onclick="toStep2()">המשך לבחירת שירות &larr;</button>
+  </div>
+
+  <!-- STEP 2 -->
+  <div id="step2" class="card" style="display:none">
+    <div class="card-title">🚚 בחר שירות</div>
+    <div class="service-options">
+      <div class="svc-card selected" id="pickupCard" onclick="setSvc('pickup')">
+        <span class="svc-check">✓</span>
+        <span class="svc-icon">🏠</span>
+        <span class="svc-name">איסוף עצמי</span>
+        <span class="svc-price">5 ₪</span>
+        <span class="svc-desc">החבילה ממתינה<br>אצל משפחת סמואל</span>
+      </div>
+      <div class="svc-card" id="delivCard" onclick="setSvc('delivery')">
+        <span class="svc-check">✓</span>
+        <span class="svc-icon">🛵</span>
+        <span class="svc-name">משלוח לבית</span>
+        <span class="svc-price">15 ₪</span>
+        <span class="svc-desc">מביאים ישירות<br>עד הדלת</span>
+      </div>
+    </div>
+    <div class="address-section" id="addrSec">
+      <div class="form-group">
+        <label>תיאור הכתובת למשלוח *</label>
+        <textarea id="address" placeholder="לדוגמה: רחוב הגפן 5, ליד הגדר הכחולה 😊"></textarea>
+      </div>
+    </div>
+    <div class="err-msg" id="err2">⚠️ יש להכניס כתובת למשלוח</div>
+    <button class="btn btn-primary" id="s2Btn" onclick="toStep3()">המשך לתשלום (5 ₪) &larr;</button>
+    <button class="btn btn-ghost" onclick="goBack(1)">&#8592; חזור</button>
+  </div>
+
+  <!-- STEP 3 -->
+  <div id="step3" class="card" style="display:none">
+    <div class="card-title">💳 תשלום</div>
+    <div class="pay-summary">
+      <div class="pay-amount" id="payAmt">5 ₪</div>
+      <div class="pay-label" id="payLbl">עבור איסוף עצמי ממשפחת סמואל</div>
+      <div class="pay-detail" id="payDetail"></div>
+    </div>
+    <p class="pay-intro">שלח את התשלום דרך האפליקציה שלך:</p>
+    <div class="pay-btns">
+      <a href="https://links.payboxapp.com/UPXq9jGkI1b" target="_blank" class="btn-paybox">
+        💳&nbsp;Paybox
+        <span style="position:absolute;top:-9px;right:-6px;background:#E09430;color:#fff;font-size:10px;font-weight:900;padding:2px 7px;border-radius:20px;white-space:nowrap;">מומלץ ⭐</span>
+      </a>
+      <button onclick="showBitInfo()" class="btn-bit">💚&nbsp;Bit</button>
+    </div>
+    <div id="bitInfo" style="display:none;background:#E8F8EF;border:1.5px solid #A8D8BC;border-radius:12px;padding:14px;margin-bottom:12px;text-align:center;">
+      <div style="font-size:15px;font-weight:800;color:#1B5E2E;margin-bottom:4px;">תשלום דרך Bit</div>
+      <div style="font-size:14px;color:#2E7D52;">יש להעביר את הסכום למספר</div>
+      <div style="font-size:26px;font-weight:900;color:#1B5E2E;margin:6px 0;letter-spacing:1px;">052-300-3593</div>
+      <div style="font-size:12px;color:#5A8A6A;">שים לב: פייבוקס מהיר ועדיף — קישור ישיר בלי להקליד 😊</div>
+    </div>
+    <div class="contact-bar">לפרטים ועזרה: <strong>נבו 052-300-3593</strong></div>
+    <div class="paid-box">
+      <p>שלחת את התשלום? סמן כאן וסיימנו 👇</p>
+      <button class="btn btn-primary" id="paidBtn" onclick="confirmPaid()" style="background:var(--green);">✅&nbsp;שילמתי!</button>
+    </div>
+    <button class="btn btn-ghost" onclick="goBack(2)" style="margin-top:12px;">&#8592; חזור</button>
+  </div>
+
+  <!-- SUCCESS -->
+  <div id="successCard" class="card success-card" style="display:none">
+    <span class="success-icon">🎉</span>
+    <div class="success-title">הושלם בהצלחה!</div>
+    <div class="success-sub" id="successTxt"></div>
+    <div class="contact-bar" style="margin-top:20px;">שאלות? <strong>נבו 052-300-3593</strong></div>
+    <button class="btn btn-ghost" onclick="resetAll()" style="margin-top:18px;">הגשת בקשה חדשה</button>
+  </div>
+
+  <div class="divider">בדיקת סטטוס חבילה</div>
+  <div class="card">
+    <div class="card-title" style="color:var(--text);">🔍 איפה החבילה שלי?</div>
+    <div class="form-group">
+      <label>הכנס תעודת זהות לבדיקה</label>
+      <input type="text" id="statusId" placeholder="123456789" inputmode="numeric">
+    </div>
+    <button class="btn btn-primary" onclick="checkStatus()" style="background:#2A5570;">בדיקה</button>
+    <div id="statusResult" class="status-result"></div>
+  </div>
+</div>
+
+<div class="footer">שירות חבילות נופי פרת</div>
+
+<script>
+// ══════════════════════════════════════════════════
+//  🔧 שנה את הכתובת הזו ל-URL של ה-Apps Script שלך
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbyUQI_6ydwkIxGqKaFhZ0nNlCJOtKRgZ3944eYf9WYUaBEupZcKL0BGuembTH69XTZH6g/exec';
+// ══════════════════════════════════════════════════
+
+function api(params) {
+  return fetch(GAS_URL + '?' + new URLSearchParams(params).toString())
+    .then(r => r.json());
+}
+
+let selSvc = 'pickup';
+
+function togglePaste() { document.getElementById('pasteSec').classList.toggle('open'); }
+
+function setSvc(type) {
+  selSvc = type;
+  document.getElementById('pickupCard').classList.toggle('selected', type === 'pickup');
+  document.getElementById('delivCard').classList.toggle('selected', type === 'delivery');
+  document.getElementById('addrSec').classList.toggle('open', type === 'delivery');
+  document.getElementById('s2Btn').textContent = type === 'delivery' ? 'המשך לתשלום (15 ₪) ←' : 'המשך לתשלום (5 ₪) ←';
+}
+
+function setStep(n) {
+  for (let i = 1; i <= 3; i++) {
+    document.getElementById('si'+i).className = 'step-item'+(i<n?' done':i===n?' active':'');
+    if (i <= 2) document.getElementById('sl'+i).className = 'step-line'+(i<n?' done':'');
+  }
+}
+
+function show(id) { document.getElementById(id).style.display = 'block'; }
+function hide(id) { document.getElementById(id).style.display = 'none'; }
+function scrollTop() { window.scrollTo({top:0, behavior:'smooth'}); }
+
+function toStep2() {
+  const fn = document.getElementById('firstName').value.trim();
+  const ln = document.getElementById('lastName').value.trim();
+  const id = document.getElementById('idNum').value.trim();
+  const pk = document.getElementById('pkgNum').value.trim();
+  if (!fn || !ln || !id || !pk) { document.getElementById('err1').classList.add('show'); return; }
+  document.getElementById('err1').classList.remove('show');
+  hide('step1'); show('step2'); setStep(2); scrollTop();
+}
+
+function toStep3() {
+  if (selSvc === 'delivery' && !document.getElementById('address').value.trim()) {
+    document.getElementById('err2').classList.add('show'); return;
+  }
+  document.getElementById('err2').classList.remove('show');
+  document.getElementById('payAmt').textContent = selSvc === 'delivery' ? '15 ₪' : '5 ₪';
+  document.getElementById('payLbl').textContent = selSvc === 'delivery' ? 'עבור משלוח עד הבית' : 'עבור איסוף ממשפחת סמואל';
+  const fn = document.getElementById('firstName').value.trim();
+  const ln = document.getElementById('lastName').value.trim();
+  const pk = document.getElementById('pkgNum').value.trim();
+  document.getElementById('payDetail').textContent = fn + ' ' + ln + ' · חבילה ' + pk;
+  hide('step2'); show('step3'); setStep(3); scrollTop();
+}
+
+function goBack(n) { hide('step'+(n+1)); show('step'+n); setStep(n); scrollTop(); }
+
+function showBitInfo() {
+  const el = document.getElementById('bitInfo');
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+}
+
+function confirmPaid() {
+  const btn = document.getElementById('paidBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div>';
+
+  api({
+    action: 'submit',
+    firstName:       document.getElementById('firstName').value.trim(),
+    lastName:        document.getElementById('lastName').value.trim(),
+    idNumber:        document.getElementById('idNum').value.trim(),
+    packageNumber:   document.getElementById('pkgNum').value.trim(),
+    serviceType:     selSvc,
+    address:         document.getElementById('address').value.trim(),
+    originalMessage: document.getElementById('origMsg').value.trim()
+  })
+  .then(function(res) {
+    if (res && res.success) return api({action:'markPaid', rowIndex:res.rowIndex});
+    throw new Error();
+  })
+  .then(showSuccess)
+  .catch(function() {
+    btn.disabled = false;
+    btn.textContent = '✅ שילמתי!';
+    alert('שגיאה. נסה שוב.');
+  });
+}
+
+function showSuccess() {
+  hide('step3'); hide('stepIndicator');
+  const svc = selSvc === 'delivery' ? 'משלוח עד הבית' : 'איסוף עצמי ממשפחת סמואל';
+  const fn  = document.getElementById('firstName').value.trim();
+  document.getElementById('successTxt').innerHTML =
+    '<strong>'+fn+'</strong>, הבקשה שלך לקבלת <strong>'+svc+'</strong> נשמרה! נבו יצור איתך קשר בהקדם.';
+  show('successCard'); scrollTop();
+}
+
+function resetAll() {
+  ['firstName','lastName','idNum','pkgNum','address','origMsg'].forEach(id => document.getElementById(id).value = '');
+  selSvc = 'pickup'; setSvc('pickup');
+  document.getElementById('pasteSec').classList.remove('open');
+  hide('successCard'); show('stepIndicator'); show('step1'); setStep(1); scrollTop();
+}
+
+function checkStatus() {
+  const id  = document.getElementById('statusId').value.trim();
+  const div = document.getElementById('statusResult');
+  if (!id) return;
+  div.innerHTML = '<p style="text-align:center;color:var(--text-lt);padding:12px;font-size:14px;">🔍 מחפש...</p>';
+  api({action:'checkStatus', id:id})
+    .then(function(res) {
+      if (!res || !res.found) {
+        div.innerHTML = '<p style="text-align:center;color:var(--text-lt);padding:12px;font-size:14px;">לא נמצאו חבילות לתעודת זהות זו.</p>';
+        return;
+      }
+      const cls  = {'ממתין':'b-waiting','ראיתי את פרטי החבילה':'b-seen','אספתי את החבילה':'b-collected','אצלך בבית':'b-delivered'};
+      const icons = {'ממתין':'⏳','ראיתי את פרטי החבילה':'👀','אספתי את החבילה':'✅','אצלך בבית':'🏠'};
+      div.innerHTML = res.orders.map(function(o) {
+        const cl = cls[o.status] || 'b-waiting';
+        const ic = icons[o.status] || '📦';
+        const dt = o.timestamp ? new Date(o.timestamp).toLocaleDateString('he-IL') : '';
+        return '<div class="status-card"><div class="status-row"><div>'+
+          '<div class="status-name">'+o.firstName+' '+o.lastName+'</div>'+
+          '<div class="status-meta">חבילה: '+o.packageNumber+'<br>'+o.serviceType+' · '+o.price+'₪'+(dt?' · '+dt:'')+'</div>'+
+          '</div><div style="text-align:center;">'+
+          '<span class="badge '+cl+'">'+ic+' '+o.status+'</span>'+
+          '<div class="paid-tag '+(o.paid?'paid-yes':'paid-no')+'">'+(o.paid?'✓ שולם':'○ טרם שולם')+'</div>'+
+          '</div></div></div>';
+      }).join('');
+    })
+    .catch(function() {
+      div.innerHTML = '<p style="text-align:center;color:var(--red);padding:12px;">שגיאה. נסה שוב.</p>';
+    });
+}
+</script>
+</body>
+</html>
